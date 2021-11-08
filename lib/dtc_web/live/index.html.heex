@@ -1,0 +1,67 @@
+<h1 class="text-gray-500 text-2xl mb-10 font-bold text-center">Date Time Component</h1>
+
+<div class="flex items-center justify-center bg-gray-200 h-full">
+    <div class="">
+        <div>
+            <div class="container mx-auto px-4 py-2 md:py-10">
+                <div class="mb-5" style="width: 18rem"
+                    phx-click={
+                        JS.toggle(
+                            to: "#picker", 
+                            in: {"transform transition ease-in-out duration-500", "opacity-0", "opacity-100"}, 
+                            out: {"transform transition ease-in-out duration-500", "opacity-100", "opacity-0"}
+                        )
+                    }>
+                    <div class="relative">
+                        <input type="text" value={Calendar.strftime(@date, "%a, %b %d %Y")} readonly class="w-full pl-4 pr-10 py-3 leading-none rounded-lg shadow-sm focus:outline-none focus:shadow-outline text-gray-400 font-medium" placeholder="Select date"/>
+                        <div class="absolute top-0 right-0 px-3 py-2">
+                            <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <!-- PICKER -->
+                        <div id="picker" class="hidden bg-white mt-12 rounded-lg shadow p-4 absolute top-0 left-0" style="width: 18rem">
+                            <div class="flex justify-between items-center mb-2">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-800"><%= Calendar.strftime(@date, "%B") %></span>
+                                    <span class="ml-1 text-lg text-gray-600 font-normal"><%= Calendar.strftime(@date, "%Y") %></span>
+                                </div>
+                                <div>
+                                    <button phx-click={JS.push("prev-month", loading: "#picker")} type="button" class="transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-200 p-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 inline-flex" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                        </svg>
+                                    </button> 
+                                    <button phx-click={JS.push("next-month", loading: "#picker")} type="button" class="transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-200 p-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 inline-flex" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </button>   
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap mb-3 -mx-1">
+                                <%= for day <- @days do %>
+                                    <div style="width: 14.26%" class="w-1/7 px-1">
+                                        <div class="text-gray-800 font-medium text-center text-xs"><%= day %></div>
+                                    </div>
+                                <% end %>
+                            </div>
+                            <div class="flex flex-wrap -mx-1">
+                                <%= for week <- week_rows(@date), day <- week  do %>
+                                    <div style="width: 14.28%" class="text-center text-gray-500 border p-1 border-transparent text-sm" phx-click={JS.push("select-date", value: %{date: day}) |> JS.toggle(to: "#picker")}>
+                                        <%= unless day == @date do %>
+                                            <div class="hover:bg-gray-200 cursor-pointer text-center text-sm rounded-full leading-loose transition ease-in-out duration-100"><%= Calendar.strftime(day, "%d") %></div>   
+                                        <% else %>
+                                            <div class="bg-gray-500 text-white cursor-pointer text-center text-sm rounded-full leading-loose transition ease-in-out duration-100"><%= Calendar.strftime(day, "%d") %></div>   
+                                        <% end %>
+                                    </div>
+                                <% end %>
+                            </div>
+                        </div>
+                        <!-- END PICKER -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
